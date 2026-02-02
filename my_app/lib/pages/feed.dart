@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
+
+//late List<CameraDescription> cameras;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -124,40 +128,75 @@ class CameraBox extends StatefulWidget {
 
 class _CameraBoxState extends State<CameraBox> {
   bool isCameraOn = false;
+
+  ///final ImagePicker picker = ImagePicker();
+  CameraController? controller;
+  Future<void> openCamera() async {
+    final cameras = await availableCameras();
+    controller = CameraController(cameras[0], ResolutionPreset.medium);
+    await controller!.initialize();
+    setState(() {});
+  }
+
+  void closeCamera() {
+    controller?.dispose();
+    controller = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 20;
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 300,
+      height: 350,
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // vertical center
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            "Camera Feed",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
-          ),
-          const SizedBox(height: 8),
-          Icon(isCameraOn ? Icons.videocam : Icons.videocam_off),
-          SizedBox(height: 8),
-          Text("Camera is Off", style: TextStyle(fontSize: fontSize)),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                isCameraOn = !isCameraOn;
-              });
-            },
-            child: Text(isCameraOn ? "Close Camera" : "Open Camera"),
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // vertical center
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Camera Feed",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
+            ),
+            const SizedBox(height: 8),
+            Icon(isCameraOn ? Icons.videocam : Icons.videocam_off),
+            SizedBox(height: 8),
+            Text(isCameraOn?"camera on":"Camera Of", style: TextStyle(fontSize: fontSize)),
+            SizedBox(height: 20),
+            if (isCameraOn &&
+                controller != null &&
+                controller!.value.isInitialized)
+                SizedBox(
+                  height:130,
+                  width:300,
+              child:AspectRatio(
+                aspectRatio: controller!.value.aspectRatio,
+                child: CameraPreview(controller!),
+              )),
+              SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () async {
+                if (!isCameraOn) {
+                  await openCamera();
+                } else {
+                  closeCamera();
+                }
+
+                setState(() {
+                  isCameraOn = !isCameraOn;
+                });
+              },
+              child: Text(isCameraOn ? "Close Camera" : "Open Camera"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -173,7 +212,7 @@ class OutputBox extends StatelessWidget {
     double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 20;
     return Container(
       padding: const EdgeInsets.all(16),
-      height: 300,
+      height: 350,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
@@ -255,8 +294,8 @@ class Manual extends StatelessWidget {
             alignment: Alignment.center,
           ),
           Container(
-             //width: double.infinity,
-           padding: const EdgeInsets.all(3),
+            //width: double.infinity,
+            padding: const EdgeInsets.all(3),
             height: 150,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
@@ -280,7 +319,7 @@ class Manual extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
                 Text(
-                  "Phone No:1710313236",
+                  "Phone No:9710313236",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],
