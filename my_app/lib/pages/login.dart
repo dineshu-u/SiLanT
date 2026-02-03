@@ -14,7 +14,8 @@ class _LoginState extends State<Login> {
   //variable declaration
   final namectr = TextEditingController();
   final pwdctr = TextEditingController();
-  //String errmsg = "";
+  final emailctr = TextEditingController();
+  String emailError = "";
   String nameError = "";
   String passError = "";
   String manError = "";
@@ -26,6 +27,7 @@ class _LoginState extends State<Login> {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "name": namectr.text,
+        "email": emailctr.text,
         "pwd": pwdctr.text,
       }),
     );
@@ -35,12 +37,19 @@ class _LoginState extends State<Login> {
     if (data["success"] == true) {
       Navigator.pushReplacementNamed(context, '/');
     }
-    if (data["success"] == false) {
+    /*if (data["success"] == false) {
       final error = data["error"].toString().toLowerCase();
       if (error.contains("name")) setState(() => nameError = data["error"]);
       if (error.contains("pwd")) setState(() => passError = data["error"]);
+      if (error.contains("email")) setState(() => emailError = data["error"]);
       //if (error.contains("Mandatory")) setState(() => manError = data["error"]);
-    }
+    }*/
+
+    setState(() {
+      nameError = data["errors"]?["name"] ?? " ";
+      emailError = data["errors"]?["email"] ?? " ";
+      passError = data["errors"]?["pwd"] ?? " ";
+    });
   }
 
   @override
@@ -50,80 +59,93 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(title: Text("Login Page")),
       backgroundColor: Colors.grey[300],
-      body: Center(
-        child: Container(
-          width: w > 600 ? 400 : w * 0.85,
-          height: h > 500 ? 400 : h * 0.85,
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 2),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Login Page",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              //SizedBox(height:30),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Enter Your Name"),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: namectr,
-                decoration: InputDecoration(
-                  hintText: 'Enter Your Name',
-                  filled: true,
-                  fillColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            width: w > 600 ? 400 : w * 0.85,
+            //height: h > 500 ? 400 : h * 0.85,
+            height: 600,
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Login Page",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              ),
-              if (nameError.isNotEmpty)
-                Text(nameError, style: TextStyle(color: Colors.red)),
-
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Enter Your Password"),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: pwdctr,
-                decoration: InputDecoration(
-                  hintText: 'Enter Your Password',
-                  filled: true,
-                  fillColor: Colors.white,
+                SizedBox(height: 20),
+                //SizedBox(height:30),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Enter Your Name"),
                 ),
-              ),
-              if (passError.isNotEmpty)
-                Text(passError, style: TextStyle(color: Colors.red)),
+                SizedBox(height: 10),
+                TextField(
+                  controller: namectr,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Your Name',
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+                if (nameError.isNotEmpty)
+                  Text(nameError, style: TextStyle(color: Colors.red)),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Enter Your email")),
+                TextField(
+                  controller: emailctr,
+                  decoration: InputDecoration(
+                      hintText: "email", filled: true, fillColor: Colors.white),
+                ),
+                if (emailError.isNotEmpty)
+                  Text(emailError, style: TextStyle(color: Colors.red)),
+                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Enter Your Password"),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: pwdctr,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Your Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+                if (passError.isNotEmpty)
+                  Text(passError, style: TextStyle(color: Colors.red)),
 
-              SizedBox(height: 20),
+                SizedBox(height: 20),
 
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    passError = "";
-                    nameError = "";
-                  });
-                  signin();
-                },
-                child: Text("Login"),
-              ),
-              //if (manError.isNotEmpty)
-              //Text(manError, style: TextStyle(color: Colors.red)),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      passError = "";
+                      nameError = "";
+                      emailError = "";
+                    });
+                    signin();
+                  },
+                  child: Text("Login"),
+                ),
+                //if (manError.isNotEmpty)
+                //Text(manError, style: TextStyle(color: Colors.red)),
 
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
-                },
-                child: Text("SignUp"),
-              ),
-            ],
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
+                  child: Text("SignUp"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
