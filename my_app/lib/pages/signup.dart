@@ -28,7 +28,7 @@ class _SignUpState extends State<SignUp> {
     dynamic passCtrl,
   ) async {
     final res = await http.post(
-      Uri.parse("https://nonetheless-sphereless-amelia.ngrok-free.dev/signup"),
+      Uri.parse("https://silant.onrender.com/signup"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "name": nameCtrl.text,
