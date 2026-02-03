@@ -123,7 +123,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                  if(pwderror.isNotEmpty)
                    Text(pwderror,style: TextStyle(color: Colors.red)),
-                SizedBox(height: 20),
+                SizedBox(height: 19),
                 TextField(
                   obscureText: true, // hides password
                   controller: cpassCtrl,
