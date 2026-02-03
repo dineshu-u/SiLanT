@@ -14,26 +14,34 @@ class _LoginState extends State<Login> {
   //variable declaration
   final namectr = TextEditingController();
   final pwdctr = TextEditingController();
-  String errmsg = "";
+  //String errmsg = "";
+  String nameError = "";
+  String passError = "";
+  String manError = "";
+  // String confirmPassError = "";
+
   void signin() async {
-  final res = await http.post(
-    Uri.parse("https://silant.onrender.com/signin"),
-    headers: {"Content-Type": "application/json"},
-    body: jsonEncode({
-      "name": namectr.text,
-      "pwd": pwdctr.text,
-    }),
-  );
+    final res = await http.post(
+      Uri.parse("http://127.0.0.1:5000/signin"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "name": namectr.text,
+        "pwd": pwdctr.text,
+      }),
+    );
 
-  final data = jsonDecode(res.body);
+    final data = jsonDecode(res.body);
 
-  if (data["success"] == true) {
-    Navigator.pushReplacementNamed(context, '/');
-  } else {
-    setState(() => errmsg = data["error"]);
+    if (data["success"] == true) {
+      Navigator.pushReplacementNamed(context, '/');
+    }
+    if (data["success"] == false) {
+      final error = data["error"].toString().toLowerCase();
+      if (error.contains("name")) setState(() => nameError = data["error"]);
+      if (error.contains("pwd")) setState(() => passError = data["error"]);
+      //if (error.contains("Mandatory")) setState(() => manError = data["error"]);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +81,9 @@ class _LoginState extends State<Login> {
                   fillColor: Colors.white,
                 ),
               ),
+              if (nameError.isNotEmpty)
+                Text(nameError, style: TextStyle(color: Colors.red)),
+
               SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerLeft,
@@ -87,14 +98,23 @@ class _LoginState extends State<Login> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 20),
-              if (errmsg.isNotEmpty)
-                Text(errmsg, style: TextStyle(color: Colors.red)),
-           ElevatedButton(
-  onPressed: signin,
-  child: Text("Login"),
-),
+              if (passError.isNotEmpty)
+                Text(passError, style: TextStyle(color: Colors.red)),
 
+              SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    passError = "";
+                    nameError = "";
+                  });
+                  signin();
+                },
+                child: Text("Login"),
+              ),
+              //if (manError.isNotEmpty)
+              //Text(manError, style: TextStyle(color: Colors.red)),
 
               SizedBox(height: 20),
               ElevatedButton(
