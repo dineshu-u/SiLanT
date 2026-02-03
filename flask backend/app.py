@@ -25,16 +25,20 @@ def signup():
 def signin():
     data = request.json
     name = data.get('name')
+    email=data.get('email')
     pwd = data.get('pwd')
-    if not name and not pwd:
+    if not name and not pwd and not email:
         return jsonify({"error":"Enter all Mandatory","success":False})
     if not name:
         return jsonify({"error": "Enter your name", "success": False}), 400
+    
+    if not email:
+        return jsonify({"error": "Enter your email", "success": False}), 400
 
     if not pwd:
         return jsonify({"error":"Enter your pwd","success":False}),400
     
-    if name and pwd:
+    if name and pwd and pwd:
 
         return jsonify({"message": "Signin successful", "success": True})
 
