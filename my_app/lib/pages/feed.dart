@@ -145,7 +145,7 @@ class _CameraBoxState extends State<CameraBox> {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 19;
+    double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 17;
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 350,
@@ -167,20 +167,20 @@ class _CameraBoxState extends State<CameraBox> {
             const SizedBox(height: 8),
             Icon(isCameraOn ? Icons.videocam : Icons.videocam_off),
             SizedBox(height: 8),
-            Text(isCameraOn?"camera on":"Camera Of", style: TextStyle(fontSize: fontSize)),
+            Text(isCameraOn ? "camera on" : "Camera Of",
+                style: TextStyle(fontSize: fontSize)),
             SizedBox(height: 20),
             if (isCameraOn &&
                 controller != null &&
                 controller!.value.isInitialized)
-                SizedBox(
-                  height:130,
-                  width:300,
-              child:AspectRatio(
-                aspectRatio: controller!.value.aspectRatio,
-                child: CameraPreview(controller!),
-              )),
-              SizedBox(height: 20),
-
+              SizedBox(
+                  height: 130,
+                  width: 300,
+                  child: AspectRatio(
+                    aspectRatio: controller!.value.aspectRatio,
+                    child: CameraPreview(controller!),
+                  )),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 if (!isCameraOn) {
@@ -228,8 +228,7 @@ class OutputBox extends StatelessWidget {
           // ✅ FIX 7: Removed fixed width, using double.infinity
           Container(
             width: screenWidth < 600
-                ? screenWidth *
-                      0.9 // mobile (90%)
+                ? screenWidth * 0.9 // mobile (90%)
                 : screenWidth * 0.4,
             height: 200,
             decoration: BoxDecoration(border: Border.all(color: Colors.black)),
@@ -319,7 +318,7 @@ class Manual extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
                 Text(
-                  "Phone No:9710313236",
+                  "Phone No:+91 9710313236",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],
@@ -329,4 +328,5 @@ class Manual extends StatelessWidget {
       ),
     );
   }
+}
 }
