@@ -329,4 +329,4 @@ class Manual extends StatelessWidget {
     );
   }
 }
-}
+
