@@ -37,13 +37,19 @@ class _LoginState extends State<Login> {
     if (data["success"] == true) {
       Navigator.pushReplacementNamed(context, '/');
     }
-    if (data["success"] == false) {
+    /*if (data["success"] == false) {
       final error = data["error"].toString().toLowerCase();
       if (error.contains("name")) setState(() => nameError = data["error"]);
       if (error.contains("pwd")) setState(() => passError = data["error"]);
       if (error.contains("email")) setState(() => emailError = data["error"]);
       //if (error.contains("Mandatory")) setState(() => manError = data["error"]);
-    }
+    }*/
+
+    setState(() {
+      nameError = data["errors"]?["name"] ?? " ";
+      emailError = data["errors"]?["email"] ?? " ";
+      passError = data["errors"]?["pwd"] ?? " ";
+    });
   }
 
   @override

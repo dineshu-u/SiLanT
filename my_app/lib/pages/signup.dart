@@ -3,13 +3,6 @@ import 'dart:convert' show jsonEncode, jsonDecode;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/*Future<void> callApi() async {
-  final res = await http.get(
-    Uri.parse("https://nonetheless-sphereless-amelia.ngrok-free.dev/"),
-  );
-  print(res.body);
-}*/
-
 class SignUp extends StatefulWidget {
   @override
   State<SignUp> createState() => _SignUpState();
@@ -20,13 +13,15 @@ class _SignUpState extends State<SignUp> {
   final nameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+  final cpassCtrl = TextEditingController();
 
-  String errorMsg = "";
-  Future<void> signup(
-    dynamic nameCtrl,
-    dynamic emailCtrl,
-    dynamic passCtrl,
-  ) async {
+  //String errorMsg = "";
+  String nameerror = "";
+  String emailerror = "";
+  String pwderror = "";
+  String cerror = "";
+  Future<void> signup(dynamic nameCtrl, dynamic emailCtrl, dynamic passCtrl,
+      dynamic cpassCtrl) async {
     final res = await http.post(
       Uri.parse("http://127.0.0.1:5000/signup"),
       headers: {"Content-Type": "application/json"},
@@ -34,11 +29,19 @@ class _SignUpState extends State<SignUp> {
         "name": nameCtrl.text,
         "email": emailCtrl.text,
         "password": passCtrl.text,
+        "c_password": cpassCtrl.text,
       }),
     );
     final data = jsonDecode(res.body);
+    if(data["success"]==true)
+    {
+       Navigator.pushReplacementNamed(context, '/');
+    }
     setState(() {
-      errorMsg = data["error"] ?? "Signup successful";
+      nameerror = data["name"] ?? "";
+      emailerror = data["email"] ?? "";
+      pwderror = data["password"] ?? "";
+      cerror = data["cpassword"] ?? "";
     });
   }
 
@@ -78,9 +81,12 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 ),
-
                 SizedBox(height: 20),
                 Text("Enter Your Name"),
+               
+                  
+                if(nameerror.isNotEmpty)
+                    Text(nameerror,style: TextStyle(color: Colors.red)),
                 SizedBox(height: 10),
                 TextField(
                   controller: nameCtrl,
@@ -102,6 +108,8 @@ class _SignUpState extends State<SignUp> {
                     border: OutlineInputBorder(),
                   ),
                 ),
+                 if(emailerror.isNotEmpty)
+                   Text(emailerror,style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 TextField(
                   controller: passCtrl,
@@ -113,16 +121,21 @@ class _SignUpState extends State<SignUp> {
                     fillColor: Colors.white,
                   ),
                 ),
-
+                 if(pwderror.isNotEmpty)
+                   Text(pwderror,style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 TextField(
                   obscureText: true, // hides password
+                  controller: cpassCtrl,
                   decoration: InputDecoration(
                     labelText: " confirm Password",
                     border: OutlineInputBorder(),
                     fillColor: Colors.white,
                   ),
                 ),
+                
+                   if(cerror.isNotEmpty)
+                   Text(cerror,style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
@@ -138,11 +151,10 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    signup(nameCtrl, emailCtrl, passCtrl);
+                    signup(nameCtrl, emailCtrl, passCtrl, cpassCtrl);
                   },
                   child: const Text("Signup"),
                 ),
-
                 SizedBox(height: 10),
                 Text("Already Have Account"),
                 SizedBox(height: 4),
@@ -152,8 +164,8 @@ class _SignUpState extends State<SignUp> {
                   },
                   child: Text("SignIn"),
                 ),
-                if (errorMsg.isNotEmpty)
-                  Text(errorMsg, style: TextStyle(color: Colors.red)),
+                if (nameerror.isNotEmpty)
+                  Text(nameerror, style: TextStyle(color: Colors.red)),
               ],
             ),
           ),
