@@ -145,7 +145,7 @@ class _CameraBoxState extends State<CameraBox> {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 20;
+    double fontSize = MediaQuery.of(context).size.width < 700 ? 15 : 19;
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 350,
