@@ -28,7 +28,7 @@ class _SignUpState extends State<SignUp> {
     dynamic passCtrl,
   ) async {
     final res = await http.post(
-      Uri.parse("https://silant.onrender.com/signup"),
+      Uri.parse("http://127.0.0.1:5000/signup"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "name": nameCtrl.text,

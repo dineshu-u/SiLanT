@@ -26,9 +26,17 @@ def signin():
     data = request.json
     name = data.get('name')
     pwd = data.get('pwd')
-    if not name or not pwd:
-        return jsonify({"error": "Enter all mandatory fields", "success": False}), 400
-    return jsonify({"message": "Signin successful", "success": True})
+    if not name and not pwd:
+        return jsonify({"error":"Enter all Mandatory","success":False})
+    if not name:
+        return jsonify({"error": "Enter your name", "success": False}), 400
+
+    if not pwd:
+        return jsonify({"error":"Enter your pwd","success":False}),400
+    
+    if name and pwd:
+
+        return jsonify({"message": "Signin successful", "success": True})
 
 
 app.run(host="0.0.0.0", port=5000,debug=True)
