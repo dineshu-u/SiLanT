@@ -25,11 +25,49 @@ def signup():
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
+    c_password = data.get('c_password')
+
+    errors = {}
+
+    if not name:
+        errors["name"] = "name required"
+    if not email:
+        errors["email"] = "email required"
+    if not password:
+        errors["password"] = "password required"
+    if password != c_password:
+        errors["c_password"] = "passwords do not match"
+
+    if errors:
+        return jsonify({"success": False, "errors": errors}), 400
+
+    cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
+    if cursor.fetchone():
+        return jsonify({
+            "success": False,
+            "errors": {"email": "email already exists"}
+        }), 400
+
+    hashed_pwd = generate_password_hash(password)
+    cursor.execute(
+        "INSERT INTO users (name, email, pwd) VALUES (%s, %s, %s)",
+        (name, email, hashed_pwd)
+    )
+    db.commit()
+
+    return jsonify({"success": True}), 201
+
+    data = request.json or {}
+
+    name = data.get('name')
+    email = data.get('email')
+    password = data.get('password')
     c_password=data.get('c_password')
     print(name)
     errors={}
     if not name:
         errors["name"]="name required"
+        ##return jsonify({"success":False,error})
     if not email:
         errors["email"]="email required"
     if not password:
@@ -39,7 +77,7 @@ def signup():
 
         
     if not name or not email or not password:
-        return jsonify({"success": False, "error": "Missing fields"}), 400
+        return jsonify({"success": False, "error": errors}), 400
 
     # check if email already exists
     cursor.execute("SELECT id FROM users WHERE email=%s", (email,))
