@@ -33,16 +33,17 @@ class _SignUpState extends State<SignUp> {
       }),
     );
     final data = jsonDecode(res.body);
-    if(data["success"]==true)
-    {
-       Navigator.pushReplacementNamed(context, '/');
+    final errors = data["errors"] ?? {};
+    if (data["success"] == true) {
+      Navigator.pushReplacementNamed(context, '/');
     }
     setState(() {
-      nameerror = data["name"] ?? "";
-      emailerror = data["email"] ?? "";
-      pwderror = data["password"] ?? "";
-      cerror = data["cpassword"] ?? "";
-    });
+  nameerror = errors["name"] ?? "";
+  emailerror = errors["email"] ?? "";
+  pwderror = errors["password"] ?? "";
+  cerror = errors["c_password"] ?? "";
+});
+   
   }
 
   @override
@@ -83,10 +84,8 @@ class _SignUpState extends State<SignUp> {
                 ),
                 SizedBox(height: 20),
                 Text("Enter Your Name"),
-               
-                  
-                if(nameerror.isNotEmpty)
-                    Text(nameerror,style: TextStyle(color: Colors.red)),
+                if (nameerror.isNotEmpty)
+                  Text(nameerror, style: TextStyle(color: Colors.red)),
                 SizedBox(height: 10),
                 TextField(
                   controller: nameCtrl,
@@ -108,8 +107,8 @@ class _SignUpState extends State<SignUp> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-                 if(emailerror.isNotEmpty)
-                   Text(emailerror,style: TextStyle(color: Colors.red)),
+                if (emailerror.isNotEmpty)
+                  Text(emailerror, style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 TextField(
                   controller: passCtrl,
@@ -121,8 +120,8 @@ class _SignUpState extends State<SignUp> {
                     fillColor: Colors.white,
                   ),
                 ),
-                 if(pwderror.isNotEmpty)
-                   Text(pwderror,style: TextStyle(color: Colors.red)),
+                if (pwderror.isNotEmpty)
+                  Text(pwderror, style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 TextField(
                   obscureText: true, // hides password
@@ -133,9 +132,8 @@ class _SignUpState extends State<SignUp> {
                     fillColor: Colors.white,
                   ),
                 ),
-                
-                   if(cerror.isNotEmpty)
-                   Text(cerror,style: TextStyle(color: Colors.red)),
+                if (cerror.isNotEmpty)
+                  Text(cerror, style: TextStyle(color: Colors.red)),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
