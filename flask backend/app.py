@@ -2,10 +2,20 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
+from PIL import Image
+from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 app = Flask(__name__)
 CORS(app)
 
+
+processor = AutoImageProcessor.from_pretrained(
+    "joseluhf11/sign_language_classification_v1"
+)
+model = AutoModelForImageClassification.from_pretrained(
+    "joseluhf11/sign_language_classification_v1"
+)
+model.eval()
 
 # -------- MySQL Connection --------
 db = mysql.connector.connect(
@@ -129,6 +139,21 @@ def signin():
         }), 400
 
     return jsonify({"success": True, "message": "login successful"}), 200
+
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    file = request.files["image"]
+    img = Image.open(file).convert("RGB")
+
+    inputs = processor(images=img, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**inputs)
+
+    pred = outputs.logits.argmax(-1).item()
+    label = model.config.id2label[pred]
+
+    return jsonify({"prediction": label})    
 
 
 # -------- RUN SERVER --------
